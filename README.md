@@ -7,5 +7,10 @@
 在 \node_modules\xlsx-style\dist\cpexcel.js找到 var cpt = require(’./cpt’ + ‘able’); 并改成 var cpt = cptable;
 否则项目会报错。
 
-**项目运行截图
-![image](https://github.com/h03147/ilab-x-get-special-info/blob/main/public/img/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20210228151116.png)
+###项目运行截图
+
+<p align="center">
+<a href="https://github.com/h03147">
+  <img height="180em" src="https://github.com/h03147/ilab-x-get-special-info/blob/main/public/img/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20210228151116.png"/>
+</a>
+</p>
