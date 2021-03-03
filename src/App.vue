@@ -59,25 +59,28 @@
       </el-table-column>
       <el-table-column label="项目学校" prop="schoolTitle"></el-table-column>
       <el-table-column label="项目名称" prop="title"></el-table-column>
-      <el-table-column label="项目负责人姓名" prop="userInfo.name"></el-table-column>
-      <el-table-column label="专业技术职称" prop="userInfo.techDuty">
+      <el-table-column label="项目负责人姓名" prop=".name"></el-table-column>
+      <el-table-column label="专业技术职称" prop="techDuty">
         <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.userInfo.techDuty == 4">{{techDutyData[4]}}
+          <el-tag type="success" v-if="scope.row.techDuty == 4">{{techDutyData[4]}}
           </el-tag>
-          <el-tag v-else-if="scope.row.userInfo.techDuty == 3">
+          <el-tag v-else-if="scope.row.techDuty == 3">
             {{techDutyData[3]}}
           </el-tag>
-          <el-tag type="info" v-else-if="scope.row.userInfo.techDuty == 2">
+          <el-tag type="info" v-else-if="scope.row.techDuty == 2">
             {{techDutyData[2]}}
           </el-tag>
-          <el-tag type="danger" v-else-if="scope.row.userInfo.techDuty == 1">
+          <el-tag type="danger" v-else-if="scope.row.techDuty == 1">
             {{techDutyData[1]}}
           </el-tag>
-          <el-tag type="warning" v-else>{{techDutyData[0]}}</el-tag>
+          <el-tag type="warning" v-else-if="scope.row.techDuty == 0">
+              {{techDutyData[0]}}
+          </el-tag>
+            <el-tag type="success" v-else>{{techDutyData[5]}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="行政职务" prop="userInfo.adminDuty"></el-table-column>
-      <el-table-column label="所属院系" prop="userInfo.faculty"></el-table-column>
+      <el-table-column label="行政职务" prop="adminDuty"></el-table-column>
+      <el-table-column label="所属院系" prop="faculty"></el-table-column>
 
     </el-table>
   </div>
@@ -111,7 +114,7 @@
         {label: '地质类', value: 85, totalNumber: 20}, {label: '文学类', value: 95, totalNumber: 60}
       ],
       menuSelect: '',
-      techDutyData: ['高级工程师/研究员', '未知', '讲师', '副教授', '教授'],
+      techDutyData: ['高级工程师/研究员', '未知', '讲师', '副教授', '教授', '导出格式转换成功'],
     }
   },
   created() {
@@ -126,9 +129,37 @@
       )
       .then((response) => {
         const res = response.data;
-        console.log(res);
-        console.log(res.data)
-        _this.searchTableData = res.data;
+        // console.log(res);
+        // console.log(res.data)
+        // _this.searchTableData = res.data;
+
+          // ---------------------------------------------------------
+          let list = [];
+          for(let i = 0; i < res.data.length; ++i) {
+              // console.log('**********' + res.data[i].userInfo.name)
+              if(res.data[i].userInfo == null) {
+                  let newitem = {
+                      schoolTitle: res.data[i].schoolTitle,
+                      title: res.data[i].title,
+                      name: '空',
+                      techDuty: 1,
+                      adminDuty: '空',
+                      faculty: '空'
+                  };
+                  list.push(newitem);
+              } else {
+                  let item = {
+                      schoolTitle: res.data[i].schoolTitle,
+                      title: res.data[i].title,
+                      name: res.data[i].userInfo.name,
+                      techDuty: res.data[i].userInfo.techDuty,
+                      adminDuty: res.data[i].userInfo.adminDuty,
+                      faculty: res.data[i].userInfo.faculty,
+                  };
+                  list.push(item);
+              }
+          }
+          _this.searchTableData = list;
       });
 
   },
@@ -146,7 +177,47 @@
       )
       .then((response) => {
         const res = response.data;
-        _this.searchTableData = res.data;
+        let list = [];
+          for(let i = 0; i < res.data.length; ++i) {
+              // console.log('**********' + res.data[i].userInfo.name)
+              if(res.data[i].userInfo == null) {
+                  let newitem = {
+                      schoolTitle: res.data[i].schoolTitle,
+                      title: res.data[i].title,
+                      name: '空',
+                      techDuty: 1,
+                      adminDuty: '空',
+                      faculty: '空'
+                  };
+                  list.push(newitem);
+              } else {
+                  let item = {
+                      schoolTitle: res.data[i].schoolTitle,
+                      title: res.data[i].title,
+                      name: res.data[i].userInfo.name,
+                      techDuty: res.data[i].userInfo.techDuty,
+                      adminDuty: res.data[i].userInfo.adminDuty,
+                      faculty: res.data[i].userInfo.faculty,
+                  };
+                  list.push(item);
+              }
+
+              // let jsonObj = JSON.stringify(res.data[i]);
+              // if(jsonObj.indexOf("userInfo.name") <= 0) {
+              //     res.data[i].userInfo.name = '未知';
+              // } else if(jsonObj.indexOf("userInfo.name") <= 0) {
+              //     res.data[i].userInfo.techDuty = '未知';
+              // } else if(_this.searchTableData[i].userInfo.adminDuty == null) {
+              //     _this.searchTableData[i].userInfo.adminDuty = '未知';
+              // } else if(_this.searchTableData[i].userInfo.faculty == null) {
+              //     _this.searchTableData[i].userInfo.faculty = '未知';
+              // }
+          }
+        console.log('list***的数据接受' + list);
+        _this.searchTableData = list;
+        console.log('_this.searchTableData的数据接受');
+        console.log(_this.searchTableData);
+
       });
     },
 
@@ -166,11 +237,26 @@
       })
               .then(() => {
                 import('@/excel/excelOut').then(excel => {
-                  const tHeader = ['项目学校', '项目名称'] //表头
-                  const title = ['iLab-x筛选导出的数据', '']  //标题
+                  const tHeader = ['项目学校', '项目名称', '项目负责人姓名', '专业技术职称', '行政职务', '所属院系'] //表头
+                  const title = ['iLab-x筛选导出的数据', '', '', '', '', '']  //标题
                   //表头对应字段
-                  const filterVal = ['schoolTitle', 'title']
+                  const filterVal = ['schoolTitle', 'title', 'name', 'techDuty', 'adminDuty', 'faculty'];
+                    // let list = [];
+                    // for(let i = 0; i < this.searchTableData.length; ++i) {
+                    //     let item = {
+                    //         schoolTitle: this.searchTableData[i].schoolTitle,
+                    //         title: this.searchTableData[i].title,
+                    //         name: this.searchTableData[i].userInfo.name,
+                    //         techDuty: this.searchTableData[i].userInfo.techDuty,
+                    //         adminDuty: this.searchTableData[i].userInfo.adminDuty,
+                    //         faculty: this.searchTableData[i].userInfo.faculty,
+                    //     };
+                    //     list.push(item);
+                    // }
                   let list = this.searchTableData;
+                  this.filterTableData(list)
+                    console.log('这是list的数据');
+                    console.log(list);
                   let data = this.formatJson(filterVal, list);
                   // let data = this.searchTableData;
                   // data.map(item => {
@@ -181,13 +267,13 @@
                   //     }
                   //   })
                   // })
-                  const merges = ['A1:B1'] //合并单元格
+                  const merges = ['A1:F1'] //合并单元格
                   excel.export_json_to_excel({
                     title: title,
                     header: tHeader,
                     data,
                     merges,
-                    filename: 'ilab-x筛选表',
+                    filename: 'ilab-x筛选信息表',
                     autoWidth: true,
                     bookType: 'xlsx',
                     myRowFont: '2'
@@ -204,6 +290,27 @@
     formatJson(filterVal, jsonData) {//循环重组数据
       return jsonData.map(v => filterVal.map(j => v[j]))
     },
+    // 导出数据前对数据处理
+    filterTableData(data) {
+      data.forEach(item => {
+          // item.applyDate = shortTime(item.applyDate)   // 将导出的时间转换成'YYYY-MM-DD'格式
+          // item.workAge = item.workAge + '年'
+          console.log('这是item数据')
+          console.log(item)
+          if(item.techDuty == 4) {
+              item.techDuty = this.techDutyData[4];
+          } else if(item.techDuty == 3) {
+              item.techDuty = this.techDutyData[3];
+          } else if(item.techDuty == 2) {
+              item.techDuty = this.techDutyData[2];
+          } else if(item.techDuty == 1) {
+              item.techDuty = this.techDutyData[1];
+          } else {
+              item.techDuty = this.techDutyData[0];
+          }
+      })
+      return data;
+      },
     // 下拉选择框的监听
     currStationChange(item) {
       // console.log(item.label);

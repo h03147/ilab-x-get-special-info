@@ -243,7 +243,7 @@ export function export_json_to_excel({
         }
     }
     // 去掉标题边框
-    let arr = ["A1", "B1"];
+    let arr = ["A1", "F1"];
     arr.some(v => {
         console.log(v)
         let a = merges[0].split(':')
@@ -315,8 +315,8 @@ export function export_json_to_excel({
     // dataInfo["A2"].s = tableTitleFont
 
     // excel的表头自定义
-    let chemicaltableheader = ["A2", "B2"]
-    let chemicaltableheader2 = ["A2", "B2"]
+    let chemicaltableheader = ["A2", "B2", "C2", "D2", "E2", "F2"]
+    let chemicaltableheader2 = ["A2", "B2", "C2", "D2"]
     if(filename === 'ilab-x筛选信息表')
     {
         chemicaltableheader.forEach(function (val) {
@@ -345,3 +345,4 @@ export function export_json_to_excel({
         type: "application/octet-stream"
     }), `${filename}.${bookType}`);
 }
+
